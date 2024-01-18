@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
+    <title>SocketIO & Python Flask</title>
+</head>
+<body>
+    <section id="main">
+        <div id="chat">
+            <div id="interact">
+                <h1>SocketIO & Python Flask</h1>
+                <div id="sendContainer">
+                    <input type="text" id="myMessage">
+                    <button id="send">Send</button>
+                </div>
+            </div>
+            <div id="chatContainer">
+                <ul id="messages">
+                </ul>
+            </div>
+        </div>
+    </section>
+
+<!-- jquery-->
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<!-- socketio -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js" integrity="sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const socket = io() 
+
+        socket.on('chat',chat =>{
+            $('#messages').html("")
+            $(chat).each(function(index,message){
+                $('#messages').append(`<li>${message}<button onclick="borrar('${message}')" class="buttonDelete">Borrar</button></li>`)
+            })
+        })
+
+        $('#send').on('click',function(){
+            if($('#myMessage').val() == "" || $('#myMessage').val().includes(" ")){
+                alert("tus muertos")
+            }else{
+            socket.emit('message',$('#myMessage').val())
+            $('#myMessage').val("")
+            }
+        })
+
+        function borrar(message){
+            socket.emit('delete',message)
+        }
+    </script>
+</body>
+</html>
